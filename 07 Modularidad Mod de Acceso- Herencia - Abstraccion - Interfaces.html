@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Clase: Programación Fundamental - POO en C#</title>
+    <style>
+        body {
+            margin: 0; padding: 0; background-color: #121212; color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden; 
+        }
+        .slide {
+            display: none; 
+            flex-direction: column; justify-content: center; align-items: center;
+            height: 100vh; width: 100vw; box-sizing: border-box; padding: 20px;
+        }
+        .title-container { text-align: center; max-width: 900px; }
+        .title-container h1 { color: #61dafb; font-size: 3.5rem; margin-bottom: 10px; line-height: 1.2; }
+        .title-container h2 { color: #a0a0a0; font-size: 1.8rem; font-weight: 300; }
+        
+        .split {
+            display: flex; flex-direction: row; width: 95%; max-width: 1500px;
+            height: 85vh; gap: 40px; align-items: center;
+        }
+        .left { flex: 1.2; padding-right: 20px; overflow-y: auto; max-height: 80vh; }
+        .left h2 { color: #61dafb; font-size: 2.5rem; margin-top: 0; margin-bottom: 15px;}
+        .left p, .left li { font-size: 1.4rem; line-height: 1.6; color: #e0e0e0; margin-bottom: 15px; }
+        .left ul { margin-top: 10px; }
+        .left strong { color: #ffffff; }
+        
+        .right {
+            flex: 1; background: #1e1e1e; padding: 25px; border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid #333;
+            overflow-y: auto; max-height: 80vh;
+        }
+        pre {
+            margin: 0; font-family: 'Consolas', monospace; font-size: 1.25rem;
+            color: #dcdcaa; white-space: pre-wrap; line-height: 1.5;
+        }
+        .kw { color: #569cd6; font-weight: bold; } 
+        .str { color: #ce9178; } 
+        .cmt { color: #6aab73; font-style: italic; } 
+        .typ { color: #4ec9b0; } 
+        
+        #controls {
+            position: fixed; bottom: 20px; right: 30px; font-size: 1.2rem; color: #888;
+            background: rgba(0,0,0,0.7); padding: 5px 15px; border-radius: 20px;
+        }
+        
+        /* Custom scrollbar para contenido largo */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #121212; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+
+        /* Botones Interactivos */
+        .btn-reveal {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s, transform 0.2s;
+            font-weight: bold;
+        }
+
+        .btn-reveal:hover {
+            background-color: #e55a2b;
+            transform: scale(1.05);
+        }
+
+        .hidden-content {
+            display: none;
+            margin-top: 20px;
+            background-color: var(--secondary-color);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid var(--accent-color);
+            animation: fadeIn 0.5s ease-in;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== PORTADA ==================== -->
+    <div class="slide">
+        <div class="title-container">
+            <h1>Programación Fundamental</h1>
+            <h2>Ingeniería en Sistemas e Innovación Digital</h2>
+            <p style="color: #a0a0a0; font-size: 1.2rem; margin-top: 20px;">Conceptos Clave: Modularidad, Modificadores, Herencia, Abstracción e Interfaces</p>
+            <p style="color: #666; margin-top: 50px; font-style: italic;">(Usa las flechas &larr; y &rarr; o haz clic en los lados de la pantalla para avanzar)</p>
+        </div>
+    </div>
+
+    <!-- ==================== TEMA 1: MODULARIDAD ==================== -->
+    <div class="slide">
+        <div class="title-container">
+            <h1>1. Modularidad</h1>
+            <h2>El arte de dividir y organizar el código</h2>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="split">
+            <div class="left">
+                <h2>El problema del código "Espagueti"</h2>
+                <p>Cuando comenzamos a programar en primer semestre, es común escribir todo el código en un solo archivo (el famoso <code>Program.cs</code>). Esto funciona para tareas pequeñas, pero es insostenible en el mundo real.</p>
+                <p>Imagina un videojuego moderno: si escribieras la lógica de movimiento del jugador, la inteligencia artificial de los enemigos y el sistema de guardado en un solo documento, tendrías decenas de miles de líneas. Encontrar un error sería como buscar una aguja en un pajar.</p>
+            </div>
+            <div class="right">
+                <pre><span class="cmt">// Código caótico: Todo en el mismo lugar</span>
+<span class="kw">class</span> <span class="typ">JuegoCompleto</span> 
+{
+    <span class="kw">public void</span> MoverJugador() { ... }
+    <span class="kw">public void</span> EnemigoAtaca() { ... }
+    <span class="kw">public void</span> GuardarPartida() { ... }
+    <span class="kw">public void</span> CargarGraficos() { ... }
+    <span class="kw">public void</span> ReproducirMusica() { ... }
+    <span class="cmt">// ... 5000 líneas más ...</span>
+}</pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="split">
+            <div class="left">
+                <h2>¿Qué es la Modularidad?</h2>
+                <p>Es el principio de dividir un sistema masivo en piezas lógicas más pequeñas, independientes y manejables. A estas piezas las llamamos <strong>módulos</strong>.</p>
+                <p><strong>Analogía del Campus Universitario:</strong> UNIFRANZ no es un solo salón gigante donde todos hacen todo al mismo tiempo. Está dividida en módulos: el área de admisiones, la biblioteca, los laboratorios de sistemas, y las aulas teóricas. Si hay que pintar la biblioteca, el resto de la universidad sigue funcionando sin enterarse.</p>
+            </div>
+            <div class="right">
+                <pre><span class="cmt">// El código se organiza en piezas independientes</span>
+<span class="cmt">// Módulo 1: Solo se encarga del jugador</span>
+<span class="kw">class</span> <span class="typ">Jugador</span> { ... }
+
+<span class="cmt">// Módulo 2: Solo se encarga del audio</span>
+<span class="kw">class</span> <span class="typ">MotorAudio</span> { ... }
+
+<span class="cmt">// Módulo 3: Solo se encarga de guardar</span>
+<span class="kw">class</span> <span class="typ">SistemaGuardado</span> { ... }</pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="split">
+            <div class="left">
+                <h2>Estructura Sintáctica: namespace</h2>
+                <p>En C#, creamos un módulo envolviendo nuestro código con la palabra reservada <span class="kw">namespace</span> (espacio de nombres).</p>
+                <p>Piensa en un <code>namespace</code> como una carpeta virtual. Todas las clases que pongas dentro de esas llaves pertenecen a esa categoría específica. Esto evita que clases con el mismo nombre choquen entre sí.
+                    <br><button class="btn-reveal" onclick="revealContent('reveal1')" style="background-color: #469eb7;">¿Quieren saber algo curioso con los namespaces?</button>
+                    <div id="reveal1" class="hidden-content" style="display: block;">
+                <ul>
+                    <li>🔥 No existe un botón mágico o una configuración especial en el menú llamada "Crear Namespace". Un namespace es pura y exclusivamente una palabra reservada en el texto del código.</li>
+                    <li>🔥 Para agregar un NAMESPACE puedes: (*)Agregar una clase (click derecho en el documento => agregar clase=>ponen nombre=> Visual Studio les generará automáticamente una plantilla. Por defecto, Visual Studio le pone al namespace el mismo nombre que tiene el proyecto (por ejemplo, si su proyecto se llama SistemaEstudiantil, dirá namespace SistemaEstudiantil).).</li>
+                    <li>🔥 Lo único que el estudiante debe hacer es borrar ese nombre por defecto y escribir tu instrucción, dejándolo exactamente como tú lo pusiste:</li>
+                </ul>
+                <br><button class="btn-reveal" onclick="revealContent('reveal2')" style="background-color: #469eb7;">¿Un truquito para crear namespaces ordenadamente?</button>
+                <div id="reveal2" class="hidden-content" style="display: block;">
+                    <SPan>A nivel profesional, los namespaces suelen reflejar las carpetas físicas del proyecto. </SPan>
+                <ul>
+                    <li>🔥 Como buena práctica en el explorador de Soluciones, pueden hacer clic derecho en el proyecto -> Agregar -> Nueva Carpeta</li>
+                    <li>🔥 Nombran la carpeta "Academico" o el nombre que quieren que tenga el namespace despues del punto (como en el ejemplo).</li>
+                    <li>🔥 Hacen clic derecho sobre esa carpeta -> Agregar -> Clase -> Materia.cs.</li>
+                    <li>🔥Al hacerlo así, Visual Studio es inteligente y escribirá automáticamente el código base con el namespace anidado correspondiente al nombre de la carpeta, ahorrándoles el trabajo de escribirlo a mano</li>
+                </ul></div>
+            </div>  </p>
+            </div>
+            <div class="right">
+                <pre><span class="cmt">// Creamos un espacio para todo lo relacionado al usuario</span>
+<span class="kw">namespace</span> SistemaVentas.Usuarios
+{
+    <span class="kw">public class</span> <span class="typ">Cliente</span> { ... }
+    <span class="kw">public class</span> <span class="typ">Administrador</span> { ... }
+}
+
+<span class="cmt">// Otro espacio para el inventario</span>
+<span class="kw">namespace</span> SistemaVentas.Inventario
+{
+    <span class="kw">public class</span> <span class="typ">Producto</span> { ... }
+}</pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="split">
+            <div class="left">
+                <h2>Conectando Módulos: using</h2>
+                <p>Si tu código está dividido en <code>namespaces</code>, ¿cómo hacemos que hablen entre ellos?</p>
+                <p>Utilizamos la directiva <span class="kw">using</span> en la parte superior del archivo. Esto le dice a C#: <em>"Oye, en este archivo voy a necesitar utilizar las herramientas que guardaste en este otro módulo"</em>.</p>
+            </div>
+            <div class="right">
+                <pre><span class="cmt">// Archivo: Program.cs</span>
+
+<span class="cmt">// Importamos los módulos que necesitamos</span>
+<span class="kw">using</span> SistemaVentas.Usuarios;
+<span class="kw">using</span> SistemaVentas.Inventario;
+
+<span class="kw">class</span> <span class="typ">Program</span>
+{
+    <span class="kw">static void</span> Main()
+    {
+        <span class="cmt">// Ahora el sistema reconoce estas clases</span>
+        <span class="typ">Cliente</span> c1 = <span class="kw">new</span> <span class="typ">Cliente</span>();
+        <span class="typ">Producto</span> p1 = <span class="kw">new</span> <span class="typ">Producto</span>();
+    }
+}</pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="split">
+            <div class="left">
+                <h2>Ejercicios Paso a Paso: Modularidad</h2>
+                <p><strong>Nivel Básico (Guiado):</strong></p>
+                <ol>
+                    <li>Abre tu IDE y crea un proyecto de consola.</li>
+                    <li>Crea un archivo llamado <code>Geometria.cs</code>. Adentro, escribe <code>namespace Matematicas.Geometria</code>.</li>
+                    <li>Dentro de ese namespace, crea la clase <code>Cuadrado</code> con un método que calcule el área.</li>
+                    <li>Ve a tu <code>Program.cs</code>, escribe <code>using Matematicas.Geometria;</code> al inicio e instancia tu cuadrado.</li>
+                </ol>
+            </div>
+            <div class="right">
+                <pre><span class="cmt">// Archivo: Geometria.cs</span>
+<span class="kw">namespace</span> Matematicas.Geometria
+{
+    <span class="kw">public class</span> <span class="typ">Cuadrado</span> 
+    {
+        <span class="kw">public double</span> CalcularArea(<span class="kw">double</span> lado) 
+        {
+            <span class="kw">return</span> lado * lado;
+        }
+    }
+}</pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="split">
+            <div class="left">
+                <h2>Ejercicios Paso a Paso: Modularidad</h2>
+                <p><strong>Nivel Complejo (Para pensar):</strong></p>
+                <p>Modela un fragmento del sistema de la universidad. Deberás crear dos archivos distintos para mantener el orden.</p>
+                <ul>
+                    <li>Crea el namespace <code>Unifranz.Academico</code>. Adentro, programa la clase <code>Materia</code> (con nombre y créditos).</li>
+                    <li>Crea el namespace <code>Unifranz.Usuarios</code>. Adentro, programa la clase <code>Docente</code>.</li>
+                    <li>En tu archivo principal, importa ambos módulos y haz que un objeto <code>Docente</code> tenga un método para asignar calificaciones a una <code>Materia</code>.</li>
+                </ul>
+            </div>
+            <div class="right">
+                <pre><span class="cmt">// El objetivo es que tu Main se vea así de limpio:</span>
+<span class="kw">using</span> Unifranz.Academico;
+<span class="kw">using</span> Unifranz.Usuarios;
+
+<span class="typ">Docente</span> ingSistemas = <span class="kw">new</span> <span class="typ">Docente</span>(<span class="str">"Alejandro"</span>);
+<span class="typ">Materia</span> progFunc = <span class="kw">new</span> <span class="typ">Materia</span>(<span class="str">"Programación"</span>);
+
+ingSistemas.DictarClase(progFunc);</pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== TEMA 2: MODIFICADORES ==================== -->
+    <div class="slide">
+        <div class="title-container">
+            <h1>2. Modificadores de Acceso</h1>
+            <h2>La seguridad de tus datos (Encapsulamiento)</h2>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="split">
+            <div class="left">
+                <h2>¿Qué son los Modificadores?</h2>
+                <p>En la programación orientada a objetos, no queremos que cualquier parte del sistema pueda cambiar los datos de otra parte de forma accidental o malintencionada.</p>
+                <p>Los modificadores de acceso son palabras clave que actúan como "candados". Definen <strong>quién tiene permiso</strong> para ver o modificar las variables y métodos de una clase.</p>
+                <p>A la práctica de proteger estos datos la llamamos <strong>Encapsulamiento</strong>.</p>
+            </div>
+            <div class="right">
+                <pre><span class="cmt">// El peligro de dejar todo sin candado:</span>
+<span class="kw">public class</span> <span class="typ">CuentaBancaria</span>
+{
+    <span class="cmt">// ¡Cualquiera puede modificar esto desde afuera!</span>
+    <span class="kw">public double</span> Saldo; 
+}
+
+<span class="kw">class</span> <span class="typ">Hack</span> 
+{
+    <span class="kw">static void</span> Main() {
+        <span class="typ">CuentaBancaria</span> miCuenta = <span class="kw">new</span> <span class="typ">CuentaBancaria</span>();
+        <span class="cmt">// Robo cibernético o error humano:</span>
+        miCuenta.Saldo = -999999; 
+    }
+}</pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="split">
+            <div class="left">
+                <h2>Analogía: Tu Perfil de Redes Sociales</h2>
+                <p>Piensa en tu cuenta de Instagram o Facebook:</p>
+                <ul>
+                    <li><strong>Público:</strong> Tu foto de perfil y tu nombre de usuario. Cualquier persona en internet puede verlos.</li>
+                    <li><strong>Privado:</strong> Tus mensajes directos y tu contraseña. Solo TÚ, desde adentro de tu cuenta, tienes acceso a ellos. Ningún otro usuario puede leerlos ni alterarlos directamente.</li>
+                </ul>
+                <p>En el código, queremos que variables sensibles (como contraseñas, saldos o cálculos críticos) sean estrictamente privadas.</p>
+            </div>
+            <div class="right">
+                <pre><span class="kw">public class</span> <span class="typ">PerfilUsuario</span>
+{
+    <span class="cmt">// Visible para todo el mundo</span>
+    <span class="kw">public string</span> NombreUsuario; 
+    
+    <span class="cmt">// Totalmente oculto, el sistema lo protege</span>
+    <span class="kw">private string</span> Contrasena; 
+    <span class="kw">private string</span> MensajesPrivados;
+}</pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="split">
+            <div class="left">
+                <h2>Los 3 Modificadores Principales</h2>
+                <p>En C# utilizamos estas palabras clave antes de declarar variables o métodos:</p>
+                <ol>
+                    <li><code><span class="kw">public</span></code>: Sin restricciones. Accesible desde cualquier archivo o clase.</li>
+                    <li><code><span class="kw">private</span></code>: Oculto. Accesible <strong>solo</strong> desde adentro de las llaves <code>{}</code> de la clase donde se creó.</li>
+                    <li><code><span class="kw">protected</span></code>: Un punto medio. Accesible en su propia clase y en clases que "hereden" de ella (veremos herencia en breve).</li>
+                </ol>
+            </div>
+            <div class="right">
+                <pre><span class="kw">public class</span> <span class="typ">PersonajeDeJuego</span>
+{
+    <span class="kw">public string</span> Nombre; <span class="cmt">// Todos ven su nombre</span>
+    
+    <span class="kw">private int</span> saludActual; <span class="cmt">// Nadie puede bajarle vida directamente</span>
+
+    <span class="kw">public void</span> RecibirDano(<span class="kw">int</span> cantidad) 
+    {
+        <span class="cmt">// Este método SÍ puede alterar la variable privada</span>
+        <span class="cmt">// porque está adentro de la misma clase.</span>
+        saludActual = saludActual - cantidad;
+    }
+}</pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="split">
+            <div class="left">
+                <h2>La Solución Elegante: Propiedades</h2>
+                <p>En lenguajes antiguos, creábamos funciones "Get" y "Set" separadas para proteger datos. En C#, la forma moderna de encapsular es usando <strong>Propiedades</strong>.</p>
+                <p>Una propiedad expone una variable de forma controlada. Usamos el bloque <code>get</code> para definir qué pasa cuando alguien lee el dato, y el bloque <code>set</code> para validar la información antes de guardarla usando la palabra clave <code>value</code>.</p>
+            </div>
+            <div class="right">
+                <pre><span class="kw">public class</span> <span class="typ">CuentaBancaria</span>
+{
+    <span class="cmt">// Variable privada real (respaldada)</span>
+    <span class="kw">private double</span> _saldo;
+
+    <span class="cmt">// Propiedad pública que actúa como filtro</span>
+    <span class="kw">public double</span> Saldo 
+    {
+        <span class="kw">get</span> { <span class="kw">return</span> _saldo; }
+        <span class="kw">set</span> 
+        { 
+            <span class="cmt">// 'value' es lo que el usuario intentó guardar</span>
+            <span class="kw">if</span> (value >= 0) {
+                _saldo = value; <span class="cmt">// Lo permitimos</span>
+            } <span class="kw">else</span> {
+                Console.WriteLine(<span class="str">"Error: Saldo negativo."</span>);
+            }
+        }
+    }
+}</pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="split">
+            <div class="left">
+                <h2>Ejercicios Paso a Paso: Modificadores</h2>
+                <p><strong>Nivel Básico (Guiado):</strong></p>
+                <ol>
+                    <li>Crea una clase <code>Termometro</code>.</li>
+                    <li>Declara una variable <code>private double _temperatura;</code>.</li>
+                    <li>Crea una Propiedad pública llamada <code>Temperatura</code>.</li>
+                    <li>En el <code>set</code>, haz un <code>if</code> para que solo acepte el valor si es mayor o igual a -273 (Cero absoluto).</li>
+                    <li>Prueba desde el Main asignarle -300 y observa cómo el encapsulamiento protege tu clase.</li>
+                </ol>
+            </div>
+            <div class="right">
+                <pre><span class="cmt">// Intento de alterar la clase desde el Main:</span>
+<span class="typ">Termometro</span> t1 = <span class="kw">new</span> <span class="typ">Termometro</span>();
+
+<span class="cmt">// Esto debería funcionar y guardarse</span>
+t1.Temperatura = 25.5; 
+
+<span class="cmt">// Esto debería ser rechazado por tu lógica en el 'set'</span>
+t1.Temperatura = -400; </pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="split">
+            <div class="left">
+                <h2>Ejercicios Paso a Paso: Modificadores</h2>
+                <p><strong>Nivel Complejo (Para pensar):</strong></p>
+                <p>Crea el backend básico para un sistema de Login.</p>
+                <ul>
+                    <li>Crea la clase <code>UsuarioPlataforma</code> con las variables privadas <code>_correo</code> y <code>_password</code>.</li>
+                    <li>El correo puede tener un Propiedad normal para leer y escribir.</li>
+                    <li>Pero la contraseña no debe poder leerse libremente. Crea un método <code>public void CambiarClave(string claveAntigua, string claveNueva)</code>.</li>
+                    <li>Dentro de ese método, verifica que <code>claveAntigua</code> coincida con el <code>_password</code> actual antes de autorizar el cambio.</li>
+                </ul>
+            </div>
+            <div class="right">
+                <pre><span class="cmt">// Estructura sugerida para el método:</span>
+<span class="kw">public void</span> CambiarClave(<span class="kw">string</span> antigua, <span class="kw">string</span> nueva)
+{
+    <span class="kw">if</span> (antigua == <span class="kw">this</span>._password)
+    {
+        <span class="kw">this</span>._password = nueva;
+        Console.WriteLine(<span class="str">"Clave actualizada con éxito"</span>);
+    }
+    <span class="kw">else</span>
+    {
+        Console.WriteLine(<span class="str">"Acceso denegado: Clave errónea"</span>);
+    }
+}</pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== TEMA 3: HERENCIA ==================== -->
+    <div class="slide">
+        <div class="title-container">
+            <h1>3. Herencia</h1>
+            <h2>No repitas código: La Jerarquía de Clases</h2>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="split">
+            <div class="left">
+                <h2>¿Qué es la Herencia?</h2>
+                <p>En ingeniería de software existe una regla de oro llamada <strong>DRY</strong> (<em>Don't Repeat Yourself</em> - No te repitas).</p>
+                <p>La herencia nos permite crear una clase nueva basándose en una clase que ya existe. La nueva clase (Hija) "hereda" o absorbe todos los atributos y métodos de la clase base (Padre) de forma automática.</p>
+                <p>La herencia siempre define una relación estricta del tipo <strong>"ES UN"</strong>.</p>
+            </div>
+            <div class="right">
+                <pre><span class="cmt">// Sin herencia, repetiríamos código aburrido:</span>
+
+<span class="kw">class</span> <span class="typ">Perro</span> { 
+    <span class="kw">public string</span> Nombre; <span class="cmt">// Repetido</span>
+    <span class="kw">public int</span> Edad;      <span class="cmt">// Repetido</span>
+    <span class="kw">public void</span> Ladrar() { }
+}
+
+<span class="kw">class</span> <span class="typ">Gato</span> { 
+    <span class="kw">public string</span> Nombre; <span class="cmt">// Repetido</span>
+    <span class="kw">public int</span> Edad;      <span class="cmt">// Repetido</span>
+    <span class="kw">public void</span> Maullar() { }
+}</pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="split">
+            <div class="left">
+                <h2>Analogía: Clases en un Videojuego (RPG)</h2>
+                <p>Imagina que estás programando un juego de rol. Todos los personajes en el juego tienen características básicas: Nombre, Puntos de Vida (HP) y la capacidad de moverse.</p>
+                <p>Un <strong>Guerrero</strong> ES UN personaje. Un <strong>Mago</strong> ES UN personaje. En lugar de escribir el código de movimiento y vida desde cero para ambos, creas una clase base <code>Personaje</code>. El Guerrero hereda eso y añade lo propio: usar escudo. El Mago hereda eso y añade lo propio: lanzar hechizos.</p>
+            </div>
+            <div class="right">
+                <pre><span class="cmt">// Clase Padre (Base)</span>
+<span class="kw">public class</span> <span class="typ">Personaje</span> 
+{
+    <span class="kw">public string</span> Nombre;
+    <span class="kw">public int</span> Vida;
+    <span class="kw">public void</span> Caminar() { Console.WriteLine(<span class="str">"Avanzando..."</span>); }
+}
+
+<span class="cmt">// Clase Hija (Usa los dos puntos :)</span>
+<span class="kw">public class</span> <span class="typ">Mago</span> : <span class="typ">Personaje</span> 
+{
+    <span class="kw">public int</span> PuntosDeMana;
+    <span class="kw">public void</span> LanzarHechizo() { Console.WriteLine(<span class="str">"Fuego!"</span>); }
+}</pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="split">
+            <div class="left">
+                <h2>Estructura Sintáctica</h2>
+                <p>Para indicarle a C# que una clase hereda de otra, simplemente colocamos el símbolo de dos puntos <code>:</code> después del nombre de la clase hija, seguido del nombre de la clase padre.</p>
+                <p>Nota importante: En C#, una clase <strong>solo puede tener UN padre</strong> (herencia simple). No puedes heredar de dos clases distintas al mismo tiempo.</p>
+            </div>
+            <div class="right">
+                <pre><span class="cmt">// Comprobando la herencia en el Main:</span>
+
+<span class="typ">Mago</span> miMago = <span class="kw">new</span> <span class="typ">Mago</span>();
+
+<span class="cmt">// Asignamos propiedad del PADRE (Personaje)</span>
+miMago.Nombre = <span class="str">"Gandalf"</span>; 
+miMago.Vida = 100;
+
+<span class="cmt">// Asignamos propiedad del HIJO (Mago)</span>
+miMago.PuntosDeMana = 500; 
+
+<span class="cmt">// Usamos método del PADRE</span>
+miMago.Caminar(); 
+
+<span class="cmt">// Usamos método del HIJO</span>
+miMago.LanzarHechizo();</pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="split">
+            <div class="left">
+                <h2>El Reto de los Constructores (La palabra 'base')</h2>
+                <p>¿Qué pasa si la clase padre es estricta y exige datos obligatorios al momento de nacer (mediante un constructor parametrizado)?</p>
+                <p>La clase hija está <strong>obligada</strong> a recibir esos datos también, y debe pasárselos hacia arriba al padre usando la palabra clave <code><span class="kw">base</span></code>.</p>
+            </div>
+            <div class="right">
+                <pre><span class="kw">public class</span> <span class="typ">Vehiculo</span>
+{
+    <span class="kw">public string</span> Marca;
+    <span class="cmt">// El padre exige la marca para existir</span>
+    <span class="kw">public</span> Vehiculo(<span class="kw">string</span> marcaV) { Marca = marcaV; }
+}
+
+<span class="kw">public class</span> <span class="typ">Auto</span> : <span class="typ">Vehiculo</span>
+{
+    <span class="kw">public int</span> Puertas;
+    
+    <span class="cmt">// El hijo recibe los dos datos, se guarda 'puertas'</span>
+    <span class="cmt">// y redirige 'marcaV' al padre usando : base()</span>
+    <span class="kw">public</span> Auto(<span class="kw">string</span> marcaV, <span class="kw">int</span> puertas) : <span class="kw">base</span>(marcaV)
+    {
+        Puertas = puertas;
+    }
+}</pre>
+            </div>
+        </div>
+    </div>
+    
+    <div class="slide">
+        <div class="split">
+            <div class="left">
+                <h2>Sobreescritura (Polimorfismo Básico)</h2>
+                <p>A veces, el hijo hereda un método del padre, pero necesita hacerlo a su manera. C# permite reescribir la lógica.</p>
+                <p>El padre debe dar permiso marcando su método como <code><span class="kw">virtual</span></code>. Luego, el hijo reescribe el método utilizando la palabra <code><span class="kw">override</span></code>.</p>
+            </div>
+            <div class="right">
+                <pre><span class="kw">public class</span> <span class="typ">Enemigo</span>
+{
+    <span class="cmt">// Virtual: "Autorizo que mis hijos cambien esto"</span>
+    <span class="kw">public virtual void</span> Atacar() 
+    { 
+        Console.WriteLine(<span class="str">"Golpe normal de 10 daño."</span>); 
+    }
+}
+
+<span class="kw">public class</span> <span class="typ">Dragon</span> : <span class="typ">Enemigo</span>
+{
+    <span class="cmt">// Override: "Yo lo haré a mi manera"</span>
+    <span class="kw">public override void</span> Atacar() 
+    { 
+        Console.WriteLine(<span class="str">"Aliento de Fuego! 100 daño!"</span>); 
+    }
+}</pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="split">
+            <div class="left">
+                <h2>Ejercicios Paso a Paso: Herencia</h2>
+                <p><strong>Nivel Básico:</strong></p>
+                <ul>
+                    <li>Crea una clase base <code>Electrodomestico</code> con las propiedades Marca y ConsumoWatts. Agrega un método <code>Encender()</code>.</li>
+                    <li>Crea una clase hija <code>Refrigerador</code> que herede de Electrodoméstico. Agrega la propiedad TemperaturaMinima.</li>
+                    <li>Crea una clase hija <code>Licuadora</code> que herede de Electrodoméstico. Agrega la propiedad Velocidades.</li>
+                    <li>Instancia ambas clases en tu Main y demuestra que pueden usar el método <code>Encender()</code>.</li>
+                </ul>
+            </div>
+            <div class="right">
+                <pre><span class="cmt">// Tu código final en el Main debería verse así:</span>
+<span class="typ">Refrigerador</span> refri = <span class="kw">new</span> <span class="typ">Refrigerador</span>();
+refri.Marca = <span class="str">"LG"</span>;
+refri.TemperaturaMinima = -5;
+refri.Encender(); <span class="cmt">// Método del padre</span>
+
+<span class="typ">Licuadora</span> lic = <span class="kw">new</span> <span class="typ">Licuadora</span>();
+lic.Marca = <span class="str">"Oster"</span>;
+lic.Velocidades = 3;
+lic.Encender(); <span class="cmt">// Método del padre</span></pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="split">
+            <div class="left">
+                <h2>Ejercicios Paso a Paso: Herencia</h2>
+                <p><strong>Nivel Complejo (Nóminas de Empleados):</strong></p>
+                <p>Vamos a mezclar Herencia, Constructores y Polimorfismo.</p>
+                <ol>
+                    <li>Crea la clase base <code>Empleado</code>. Su constructor exige el Nombre y un SalarioBase. Crea un método <code>virtual</code> llamado <code>CalcularPagoMensual()</code> que simplemente retorne el SalarioBase.</li>
+                    <li>Crea la clase hija <code>Vendedor</code>. Su constructor recibe Nombre, SalarioBase y ademas un MontoVentas. ¡Usa <code>base</code> para pasar los datos al padre!</li>
+                    <li>Usa <code>override</code> en el Vendedor para que su <code>CalcularPagoMensual()</code> retorne el SalarioBase + (MontoVentas * 0.10). Es decir, un 10% de comisión.</li>
+                </ol>
+            </div>
+            <div class="right">
+                <pre><span class="cmt">// Pista para el override:</span>
+<span class="kw">public override double</span> CalcularPagoMensual()
+{
+    <span class="cmt">// Podemos acceder a variables protected o public del padre</span>
+    <span class="kw">return</span> SalarioBase + (MontoVentas * 0.10);
+}</pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== TEMA 4: ABSTRACCIÓN ==================== -->
+    <div class="slide">
+        <div class="title-container">
+            <h1>4. Abstracción</h1>
+            <h2>Definir el "QUÉ", delegar el "CÓMO"</h2>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="split">
+            <div class="left">
+                <h2>¿Qué es la Abstracción?</h2>
+                <p>Es un principio avanzado donde aislamos el comportamiento esencial de un objeto y creamos <strong>plantillas</strong> que obligan a seguir ciertas reglas, ocultando la complejidad técnica.</p>
+                <p><strong>Analogía del Reproductor Multimedia:</strong> Imagina aplicaciones como Spotify o Netflix. Como usuario, tú presionas un botón abstracto llamado "Play". Sabes <em>QUÉ</em> hace ese botón (reproduce el medio). Pero no te importa <em>CÓMO</em> lo hace internamente (decodificación de MP3, streaming de MP4, buffer de video). La abstracción es darle al programador el botón "Play" y ocultarle la matemática.</p>
+            </div>
+            <div class="right">
+                <pre><span class="cmt">// Una clase abstracta es una plantilla incompleta.</span>
+<span class="cmt">// ¡El compilador prohíbe instanciarla directamente!</span>
+<span class="kw">public abstract class</span> <span class="typ">ReproductorMultimedia</span>
+{
+    <span class="kw">public int</span> VolumenActual;
+    <span class="kw">public void</span> SubirVolumen() { ... }
+    
+    <span class="cmt">// Método abstracto: Le decimos a los hijos QUÉ hacer,</span>
+    <span class="cmt">// pero los obligamos a ellos a programar el CÓMO.</span>
+    <span class="kw">public abstract void</span> Play(); 
+}</pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="split">
+            <div class="left">
+                <h2>Estructura Sintáctica</h2>
+                <p>Usamos la palabra clave <code><span class="kw">abstract</span></code> antes de la clase y antes de los métodos vacíos.</p>
+                <p>Presta mucha atención: Un método abstracto <strong>no tiene cuerpo (no tiene llaves {})</strong>. Simplemente termina en punto y coma.</p>
+                <p>Cualquier clase hija que herede de esta plantilla, estará <strong>obligada</strong> a escribir el código de ese método usando <code><span class="kw">override</span></code>. Si no lo hace, saldrá un error rojo en el IDE y no compilará.</p>
+            </div>
+            <div class="right">
+                <pre><span class="cmt">// Clase hija hereda de la plantilla abstracta</span>
+<span class="kw">public class</span> <span class="typ">ReproductorAudio</span> : <span class="typ">ReproductorMultimedia</span>
+{
+    <span class="cmt">// El IDE nos obliga a implementar el método Play()</span>
+    <span class="kw">public override void</span> Play()
+    {
+        Console.WriteLine(<span class="str">"Decodificando archivo MP3..."</span>);
+        Console.WriteLine(<span class="str">"Enviando señal a altavoces..."</span>);
+    }
+}</pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="split">
+            <div class="left">
+                <h2>Ejemplo Complejo: Sistema de Figuras</h2>
+                <p>Un clásico en ingeniería. Estás programando un software de dibujo CAD. Sabes que absolutamente todas las figuras geométricas pueden calcular su área. Pero la matemática es totalmente diferente para cada una.</p>
+                <p>Usamos abstracción para garantizar que todas tengan el método, pero que cada una resuelva su propia matemática.</p>
+            </div>
+            <div class="right">
+                <pre><span class="kw">public abstract class</span> <span class="typ">Figura</span>
+{
+    <span class="cmt">// Plantilla vacía</span>
+    <span class="kw">public abstract double</span> CalcularArea();
+}
+
+<span class="kw">public class</span> <span class="typ">Cuadrado</span> : <span class="typ">Figura</span>
+{
+    <span class="kw">public double</span> Lado = 5;
+    <span class="kw">public override double</span> CalcularArea() {
+        <span class="kw">return</span> Lado * Lado;
+    }
+}
+
+<span class="kw">public class</span> <span class="typ">Circulo</span> : <span class="typ">Figura</span>
+{
+    <span class="kw">public double</span> Radio = 3;
+    <span class="kw">public override double</span> CalcularArea() {
+        <span class="kw">return</span> 3.1416 * (Radio * Radio);
+    }
+}</pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="split">
+            <div class="left">
+                <h2>El Poder Real: Polimorfismo</h2>
+                <p>¿Para qué nos sirve tanta abstracción? Para procesar datos en masa de manera inteligente.</p>
+                <p>Como Cuadrado y Círculo derivan de la clase abstracta Figura, podemos guardarlos todos en una misma lista de tipo Figura. Luego, con un bucle, le decimos a cada uno "Calcula tu área", y C# sabrá automáticamente qué matemática usar para cada forma.</p>
+            </div>
+            <div class="right">
+                <pre><span class="cmt">// En el Main: Lista genérica del tipo base</span>
+<span class="typ">List</span>&lt;<span class="typ">Figura</span>&gt; misFiguras = <span class="kw">new</span> <span class="typ">List</span>&lt;<span class="typ">Figura</span>&gt;();
+
+<span class="cmt">// Agregamos formas mezcladas</span>
+misFiguras.Add(<span class="kw">new</span> <span class="typ">Cuadrado</span>());
+misFiguras.Add(<span class="kw">new</span> <span class="typ">Circulo</span>());
+
+<span class="kw">foreach</span>(<span class="kw">var</span> forma <span class="kw">in</span> misFiguras)
+{
+    <span class="cmt">// Magia: Llama a la fórmula correcta de cada hijo</span>
+    Console.WriteLine( forma.CalcularArea() ); 
+}</pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="split">
+            <div class="left">
+                <h2>Ejercicios Paso a Paso: Abstracción</h2>
+                <p><strong>Nivel Básico:</strong></p>
+                <ul>
+                    <li>Crea una clase abstracta <code>Animal</code>.</li>
+                    <li>Agrega un método normal <code>public void Dormir()</code> que imprima "Zzz...".</li>
+                    <li>Agrega un método abstracto <code>public abstract void HacerSonido();</code></li>
+                    <li>Crea las clases hijas <code>Perro</code> y <code>Gato</code> y obligatoriamente implementa el sonido con <code>override</code> ("Guau" y "Miau").</li>
+                </ul>
+            </div>
+            <div class="right">
+                <pre><span class="cmt">// Si intentas hacer esto, el programa NO compilará:</span>
+<span class="cmt">// Animal mascota = new Animal(); </span>
+
+<span class="cmt">// Lo correcto es instanciar un hijo:</span>
+<span class="typ">Perro</span> firulais = <span class="kw">new</span> <span class="typ">Perro</span>();
+firulais.Dormir();      <span class="cmt">// Método compartido</span>
+firulais.HacerSonido(); <span class="cmt">// Método específico</span></pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== TEMA 5: INTERFACES ==================== -->
+    <div class="slide">
+        <div class="title-container">
+            <h1>5. Interfaces</h1>
+            <h2>Contratos de Diseño Estrictos</h2>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="split">
+            <div class="left">
+                <h2>La gran pregunta: Clase Abstracta vs Interfaz</h2>
+                <p>Parecen lo mismo, pero son fundamentalmente distintas:</p>
+                <ul>
+                    <li><strong>Clase Abstracta:</strong> Es una plantilla a medio terminar. <em>SÍ PUEDE</em> tener variables, constructores y métodos con código real, mezclados con métodos vacíos. Define una relación de Identidad ("Un perro ES UN animal").</li>
+                    <li><strong>Interfaz:</strong> Es un contrato de diseño 100% estricto. <em>NO PUEDE</em> tener variables, ni constructores, ni una sola línea de código real. Solo dicta firmas de métodos vacíos. Define una relación de Capacidad ("Un objeto PUEDE HACER esto").</li>
+                </ul>
+            </div>
+            <div class="right">
+                <pre><span class="cmt">// Una Clase Abstracta tiene estado (variables)</span>
+<span class="kw">public abstract class</span> <span class="typ">Vehiculo</span> {
+    <span class="kw">protected int</span> combustible = 100;
+    <span class="kw">public abstract void</span> Arrancar();
+}
+
+<span class="cmt">// Una Interfaz NO tiene estado, solo reglas</span>
+<span class="kw">public interface</span> <span class="typ">IVolador</span> {
+    <span class="kw">void</span> Despegar();
+    <span class="kw">void</span> Aterrizar();
+}</pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="split">
+            <div class="left">
+                <h2>Analogía: El Tomacorriente de Pared</h2>
+                <p>Piensa en los enchufes eléctricos de la pared. Ese enchufe físico establece un <strong>contrato o estándar</strong> (2 clavijas, 220V en Bolivia).</p>
+                <p>A la red eléctrica no le importa si tú conectas un televisor, el cargador de un celular, o un microondas. Son objetos totalmente distintos, sin ninguna relación de herencia entre sí. Pero mientras sus cables <strong>cumplan con la interfaz física del enchufe</strong>, el sistema funcionará.</p>
+            </div>
+            <div class="right">
+                <pre><span class="cmt">// Por convención en C#, las interfaces empiezan con 'I'</span>
+<span class="kw">public interface</span> <span class="typ">IEnchufable</span>
+{
+    <span class="cmt">// Todo en una interfaz es público por defecto.</span>
+    <span class="cmt">// No usamos public/private ni llaves {}.</span>
+    <span class="kw">void</span> ConectarCorriente();
+    <span class="kw">int</span> ConsumoEnergia();
+}</pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="split">
+            <div class="left">
+                <h2>Estructura Sintáctica</h2>
+                <p>Para "firmar" el contrato, una clase usa los dos puntos <code>:</code> (igual que en la herencia).</p>
+                <p>Al hacerlo, te comprometes legalmente en el código a desarrollar todos los métodos de la interfaz. Nota: Aquí <strong>NO</strong> se usa la palabra <code>override</code>, simplemente escribes el método público con el mismo nombre y firma.</p>
+            </div>
+            <div class="right">
+                <pre><span class="cmt">// El Microondas firma el contrato IEnchufable</span>
+<span class="kw">public class</span> <span class="typ">Microondas</span> : <span class="typ">IEnchufable</span>
+{
+    <span class="cmt">// Obligado a programar esto:</span>
+    <span class="kw">public void</span> ConectarCorriente()
+    {
+        Console.WriteLine(<span class="str">"Microondas encendido, listo para calentar."</span>);
+    }
+
+    <span class="cmt">// Obligado a programar esto:</span>
+    <span class="kw">public int</span> ConsumoEnergia()
+    {
+        <span class="kw">return</span> 1200; <span class="cmt">// Watts</span>
+    }
+}</pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="split">
+            <div class="left">
+                <h2>¿Por qué son tan poderosas? (Múltiples Interfaces)</h2>
+                <p>En C#, una clase sufre de "Herencia Simple", es decir, solo puede tener <strong>UN padre</strong> (una clase abstracta o normal). ¡Pero puede firmar <strong>MÚLTIPLES interfaces</strong> al mismo tiempo!</p>
+                <p>Imagina un Teléfono Celular. Es un Dispositivo Electrónico (Herencia), pero además puede conectarse a WiFi (Interfaz 1) y puede tomar fotografías (Interfaz 2).</p>
+            </div>
+            <div class="right">
+                <pre><span class="cmt">// Herencia de 1 Padre + Firma de 2 Contratos (Interfaces)</span>
+<span class="kw">public class</span> <span class="typ">Celular</span> : <span class="typ">DispositivoBase</span>, <span class="typ">IConexionWiFi</span>, <span class="typ">ICamara</span>
+{
+    <span class="cmt">// 1. Absorbe código de DispositivoBase</span>
+    
+    <span class="cmt">// 2. Implementa métodos obligatorios de IConexionWiFi</span>
+    <span class="kw">public void</span> BuscarRedes() { ... }
+    
+    <span class="cmt">// 3. Implementa métodos obligatorios de ICamara</span>
+    <span class="kw">public void</span> TomarFoto() { ... }
+}</pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="split">
+            <div class="left">
+                <h2>Ejercicios Paso a Paso: Interfaces</h2>
+                <p><strong>Reto Final de Arquitectura:</strong></p>
+                <p>Vamos a garantizar que distintas partes de tu sistema puedan "Guardarse" sin importar de dónde vengan.</p>
+                <ul>
+                    <li>Crea la interfaz <code>IGuardable</code> con el método <code>void GuardarDatos(string informacion);</code>.</li>
+                    <li>Crea la clase <code>BaseDeDatos</code> que implemente la interfaz. Simula que guarda con un Console.WriteLine("Guardando en servidor SQL: " + ...).</li>
+                    <li>Crea la clase <code>ArchivoTexto</code> que implemente la misma interfaz. Simula con un Console.WriteLine("Escribiendo en disco local: " + ...).</li>
+                    <li>En tu Main, instancia ambas y envíales un string para guardar.</li>
+                </ul>
+            </div>
+            <div class="right">
+                <pre><span class="cmt">// Pista de uso en el Main:</span>
+<span class="typ">BaseDeDatos</span> miBD = <span class="kw">new</span> <span class="typ">BaseDeDatos</span>();
+<span class="typ">ArchivoTexto</span> txt = <span class="kw">new</span> <span class="typ">ArchivoTexto</span>();
+
+<span class="cmt">// Las dos clases son totalmente ajenas, pero</span>
+<span class="cmt">// comparten la garantía de la interfaz.</span>
+miBD.GuardarDatos(<span class="str">"Usuario Juan registrado"</span>);
+txt.GuardarDatos(<span class="str">"Error log file..."</span>);</pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== CIERRE ==================== -->
+    <div class="slide">
+        <div class="title-container">
+            <h1>¡Excelente Trabajo!</h1>
+            <h2>Fin de la Presentación</h2>
+            <p style="color: #61dafb; font-size: 1.5rem; margin-top: 30px;">¿Dudas sobre cómo aplicar esto en sus proyectos de semestre?</p>
+        </div>
+    </div>
+
+    <!-- Controles en pantalla -->
+    <div id="controls">
+        Diapositiva <span id="current">1</span> de <span id="total">?</span>
+    </div>
+
+    <script>
+        // Función para mostrar curiosidades dinámicas
+        function revealContent(id) {
+            const content = document.getElementById(id);
+            if(content.style.display === 'block') {
+                content.style.display = 'none';
+            } else {
+                content.style.display = 'block';
+            }
+        }
+        // Cálculo dinámico de diapositivas
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        document.getElementById('total').innerText = totalSlides;
+        
+        let currentSlide = 1;
+
+        function updateSlide() {
+            slides.forEach((slide, index) => {
+                slide.style.display = (index + 1 === currentSlide) ? 'flex' : 'none';
+            });
+            document.getElementById('current').innerText = currentSlide;
+        }
+
+        // Navegación por teclado
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'ArrowDown') {
+                if (currentSlide < totalSlides) {
+                    currentSlide++;
+                    updateSlide();
+                }
+            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                if (currentSlide > 1) {
+                    currentSlide--;
+                    updateSlide();
+                }
+            }
+        });
+
+        /* Navegación por clic en bordes
+        document.addEventListener('click', function(e) {
+            // Ignora clics si se selecciona texto
+            if (window.getSelection().toString().length > 0) return;
+            
+            if (e.clientX > window.innerWidth * 0.7) {
+                if (currentSlide < totalSlides) { currentSlide++; updateSlide(); }
+            } else if (e.clientX < window.innerWidth * 0.3) {
+                if (currentSlide > 1) { currentSlide--; updateSlide(); }
+            }
+        });*/
+         // Navegación por teclado
+        document.addEventListener('keydown', (e) => {
+            if(e.key === 'ArrowRight' || e.key === ' ') {
+                nextSlide();
+            } else if(e.key === 'ArrowLeft') {
+                prevSlide();
+            }
+        });
+
+        // Iniciar
+        window.onload = updateSlide;
+    </script>
+</body>
+</html>
